@@ -11,6 +11,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author parag
+ *
+ *Service for properly identifying and retrieving the enviorment properties.
+ */
 @Service("ConfigUtils")
 public class ConfigUtils {
 

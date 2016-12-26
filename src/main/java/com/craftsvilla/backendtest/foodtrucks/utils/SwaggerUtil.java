@@ -5,6 +5,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+/**
+ * @author parag
+ *
+ *Swagger Util to basically identify and add annotation based Controllers.
+ */
 @Configuration
 @EnableWebMvc
 public class SwaggerUtil extends WebMvcConfigurerAdapter {

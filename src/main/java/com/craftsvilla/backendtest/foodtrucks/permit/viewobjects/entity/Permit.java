@@ -5,6 +5,11 @@ import java.util.Date;
 import com.craftsvilla.backendtest.foodtrucks.enums.PermitStatus;
 import com.craftsvilla.backendtest.foodtrucks.viewobjects.entity.AbstractEntity;
 
+/**
+ * @author parag
+ *
+ *Model for Permit data. This is used for saving/fetching the entity in DB.
+ */
 public class Permit extends AbstractEntity {
 
 	private Long locationId;

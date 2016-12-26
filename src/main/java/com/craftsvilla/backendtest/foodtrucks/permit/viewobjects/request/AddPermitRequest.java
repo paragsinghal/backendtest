@@ -1,14 +1,19 @@
 package com.craftsvilla.backendtest.foodtrucks.permit.viewobjects.request;
 
-import java.util.Date;
+import java.util.List;
 
 import org.dozer.DozerBeanMapperSingletonWrapper;
 import org.dozer.Mapper;
 
-import com.craftsvilla.backendtest.foodtrucks.enums.PermitStatus;
 import com.craftsvilla.backendtest.foodtrucks.permit.viewobjects.entity.Permit;
+import com.craftsvilla.backendtest.foodtrucks.utils.CollectionUtils;
 import com.craftsvilla.backendtest.foodtrucks.viewobjects.request.AbstractRequest;
 
+/**
+ * @author parag
+ *
+ *Request pojo for add permit request. 
+ */
 public class AddPermitRequest extends AbstractRequest{
 
 	private Long locationId;
@@ -20,8 +25,6 @@ public class AddPermitRequest extends AbstractRequest{
 	private String blockLot;
 	private String block;
 	private String lot;
-	private String permit;
-	private PermitStatus status;
 	private String foodItems;
 	private Double x;
 	private Double y;
@@ -29,11 +32,9 @@ public class AddPermitRequest extends AbstractRequest{
 	private Double longitude;
 	private String schedule;
 	private String daysHours;
-	private Date NOISent;
-	private Date approved;
-	private Date received;
 	private int priorPermit;
-	private Date expirationDate;
+	private String permit;
+	private Long expirationDate;
 	
 	public AddPermitRequest() {
 		super();
@@ -46,10 +47,9 @@ public class AddPermitRequest extends AbstractRequest{
 	public AddPermitRequest(Long locationId, String applicant,
 			String facilityType, Long cnn, String locationDescription,
 			String address, String blockLot, String block, String lot,
-			String permit, PermitStatus status, String foodItems, Double x,
-			Double y, Double latitude, Double longitude, String schedule,
-			String daysHours, Date nOISent, Date approved, Date received,
-			int priorPermit, Date expirationDate) {
+			String foodItems, Double x, Double y, Double latitude,
+			Double longitude, String schedule, String daysHours,
+			int priorPermit, String permit, Long expirationDate) {
 		super();
 		this.locationId = locationId;
 		this.applicant = applicant;
@@ -60,8 +60,6 @@ public class AddPermitRequest extends AbstractRequest{
 		this.blockLot = blockLot;
 		this.block = block;
 		this.lot = lot;
-		this.permit = permit;
-		this.status = status;
 		this.foodItems = foodItems;
 		this.x = x;
 		this.y = y;
@@ -69,10 +67,8 @@ public class AddPermitRequest extends AbstractRequest{
 		this.longitude = longitude;
 		this.schedule = schedule;
 		this.daysHours = daysHours;
-		this.NOISent = nOISent;
-		this.approved = approved;
-		this.received = received;
 		this.priorPermit = priorPermit;
+		this.permit = permit;
 		this.expirationDate = expirationDate;
 	}
 
@@ -148,22 +144,6 @@ public class AddPermitRequest extends AbstractRequest{
 		this.lot = lot;
 	}
 
-	public String getPermit() {
-		return permit;
-	}
-
-	public void setPermit(String permit) {
-		this.permit = permit;
-	}
-
-	public PermitStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(PermitStatus status) {
-		this.status = status;
-	}
-
 	public String getFoodItems() {
 		return foodItems;
 	}
@@ -220,30 +200,6 @@ public class AddPermitRequest extends AbstractRequest{
 		this.daysHours = daysHours;
 	}
 
-	public Date getNOISent() {
-		return NOISent;
-	}
-
-	public void setNOISent(Date nOISent) {
-		NOISent = nOISent;
-	}
-
-	public Date getApproved() {
-		return approved;
-	}
-
-	public void setApproved(Date approved) {
-		this.approved = approved;
-	}
-
-	public Date getReceived() {
-		return received;
-	}
-
-	public void setReceived(Date received) {
-		this.received = received;
-	}
-
 	public int getPriorPermit() {
 		return priorPermit;
 	}
@@ -252,34 +208,73 @@ public class AddPermitRequest extends AbstractRequest{
 		this.priorPermit = priorPermit;
 	}
 
-	public Date getExpirationDate() {
+	public String getPermit() {
+		return permit;
+	}
+
+	public void setPermit(String permit) {
+		this.permit = permit;
+	}
+
+	public Long getExpirationDate() {
 		return expirationDate;
 	}
 
-	public void setExpirationDate(Date expirationDate) {
+	public void setExpirationDate(Long expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 
 	@Override
 	public String toString() {
-		super.toString();
 		return "AddPermitRequest [locationId=" + locationId + ", applicant="
 				+ applicant + ", facilityType=" + facilityType + ", cnn=" + cnn
 				+ ", locationDescription=" + locationDescription + ", address="
 				+ address + ", blockLot=" + blockLot + ", block=" + block
-				+ ", lot=" + lot + ", permit=" + permit + ", status=" + status
-				+ ", foodItems=" + foodItems + ", x=" + x + ", y=" + y
-				+ ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", schedule=" + schedule + ", daysHours=" + daysHours
-				+ ", NOISent=" + NOISent + ", approved=" + approved
-				+ ", received=" + received + ", priorPermit=" + priorPermit
-				+ ", expirationDate=" + expirationDate + "]";
+				+ ", lot=" + lot + ", foodItems=" + foodItems + ", x=" + x
+				+ ", y=" + y + ", latitude=" + latitude + ", longitude="
+				+ longitude + ", schedule=" + schedule + ", daysHours="
+				+ daysHours + ", priorPermit=" + priorPermit + ", permit="
+				+ permit + ", expirationDate=" + expirationDate + "]";
 	}
 
 	public Permit toPermit() {
 		Mapper mapper = DozerBeanMapperSingletonWrapper.getInstance();
 		Permit permit = mapper.map(this, Permit.class);
 		return permit;
+	}
+	
+	public void verify() throws IllegalArgumentException {
+		super.verify();
+		List<String> verificationErrors = collectVerificationErrors();
+		if (CollectionUtils.isNotEmpty(verificationErrors)) {
+			throw new IllegalArgumentException(verificationErrors.toString());
+		}
+	}
+
+	protected List<String> collectVerificationErrors() {
+
+		List<String> verificationErrors = super.collectVerificationErrors();
+		
+		if(applicant==null || applicant.isEmpty()){
+			verificationErrors.add("applicant name is mandatory");
+		}
+		if(address==null || address.isEmpty()){
+			verificationErrors.add("address is mandatory");
+		}
+		if(blockLot==null || blockLot.isEmpty()){
+			verificationErrors.add("blockLot is mandatory");
+		}
+		if(schedule==null || schedule.isEmpty()){
+			verificationErrors.add("schedule is mandatory");
+		}
+		if(permit==null || permit.isEmpty()){
+			verificationErrors.add("permit is mandatory");
+		}
+		if(expirationDate==null || expirationDate<0){
+			verificationErrors.add("expirationDate is mandatory");
+		}
+		
+		return verificationErrors;
 	}
 	
 }

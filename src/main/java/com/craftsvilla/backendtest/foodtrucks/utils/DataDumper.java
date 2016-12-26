@@ -23,6 +23,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
 
+/**
+ * @author parag
+ *
+ *Utility to upload json data to Mongo. 
+ */
 @Controller
 @RequestMapping("/dataupload")
 public class DataDumper {

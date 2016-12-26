@@ -5,7 +5,13 @@ import java.util.List;
 
 import com.craftsvilla.backendtest.foodtrucks.utils.CollectionUtils;
 
-public class AbstractRequest {
+/**
+ * @author parag
+ *
+ *Abstract request for each frontend request. 
+ *All properties which are neccesary for any request can be put here. Like user authentication.
+ */
+public abstract class AbstractRequest {
 
 	private String callingUserId;
 

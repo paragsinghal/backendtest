@@ -2,14 +2,19 @@ package com.craftsvilla.backendtest.foodtrucks.viewobjects.entity;
 
 import org.springframework.data.annotation.Id;
 
-public class AbstractEntity {
+/**
+ * @author parag
+ *
+ *Abstract entity for adding and getting data from Mongo.
+ */
+public abstract class AbstractEntity {
 	@Id
 	private String id;
 	private Long creationTime;
 	private String createdBy;
 	private String lastUpdatedBy;
 	private Long lastUpdatedTime;
-	private boolean enabled;
+	private boolean enabled = true;
 
 	public AbstractEntity() {
 		super();

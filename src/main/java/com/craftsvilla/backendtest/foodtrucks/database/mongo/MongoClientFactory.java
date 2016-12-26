@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.craftsvilla.backendtest.foodtrucks.utils.ConfigUtils;
 import com.craftsvilla.backendtest.foodtrucks.utils.LogFactory;
@@ -15,6 +14,12 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
+/**
+ * @author parag
+ *
+ *This is used to setup mongo client. Configurable mongo host/port based on environment.
+ *Connection pooling. Authentication is handled here.
+ */
 public class MongoClientFactory {
 
 	@Autowired

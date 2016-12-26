@@ -9,6 +9,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author parag
+ *
+ *Service to generate logger for any class.
+ *Logging utility.
+ */
 @Service("LogFactory")
 public class LogFactory {
 

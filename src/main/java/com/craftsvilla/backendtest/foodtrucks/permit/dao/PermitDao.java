@@ -8,6 +8,11 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.craftsvilla.backendtest.foodtrucks.enums.PermitStatus;
 import com.craftsvilla.backendtest.foodtrucks.permit.viewobjects.entity.Permit;
 
+/**
+ * @author parag
+ *
+ *         Interface for Permit Dao.
+ */
 public interface PermitDao {
 
 	public void create(Permit p) throws Exception;
@@ -23,7 +28,9 @@ public interface PermitDao {
 	public int deleteById(Long id);
 
 	public List<Permit> getPermits(String id, String applicantName,
-			Long beforeDate, Long afterDate, String streetName, PermitStatus status, Integer start,
-			Integer limit, Boolean isSearch) throws Throwable;
+			Long beforeExpirationDate, Long afterExpirationDate,
+			Long beforeCreationDate, Long afterCreationDate, String streetName,
+			PermitStatus status, Integer start, Integer limit, Boolean isSearch)
+			throws Throwable;
 
 }

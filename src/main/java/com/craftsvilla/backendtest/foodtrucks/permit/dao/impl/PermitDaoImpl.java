@@ -14,7 +14,13 @@ import com.craftsvilla.backendtest.foodtrucks.dao.AbstractDao;
 import com.craftsvilla.backendtest.foodtrucks.enums.PermitStatus;
 import com.craftsvilla.backendtest.foodtrucks.permit.dao.PermitDao;
 import com.craftsvilla.backendtest.foodtrucks.permit.viewobjects.entity.Permit;
+import com.craftsvilla.backendtest.foodtrucks.viewobjects.entity.AbstractEntity;
 
+/**
+ * @author parag
+ *
+ *         Permit Dao Implementation.
+ */
 @Service
 public class PermitDaoImpl extends AbstractDao implements PermitDao {
 
@@ -36,7 +42,7 @@ public class PermitDaoImpl extends AbstractDao implements PermitDao {
 			throw ex;
 		}
 	}
-	
+
 	public void update(Permit p) {
 		p.setLastUpdatedTime(System.currentTimeMillis());
 		try {
@@ -92,8 +98,10 @@ public class PermitDaoImpl extends AbstractDao implements PermitDao {
 	}
 
 	public List<Permit> getPermits(String id, String applicantName,
-			Long beforeDate, Long afterDate, String streetName, PermitStatus status, Integer start,
-			Integer limit, Boolean isSearch) throws Throwable {
+			Long beforeExpirationDate, Long afterExpirationDate,
+			Long beforeCreationDate, Long afterCreationDate, String streetName,
+			PermitStatus status, Integer start, Integer limit, Boolean isSearch)
+			throws Throwable {
 
 		try {
 			Query query = new Query();
@@ -102,26 +110,55 @@ public class PermitDaoImpl extends AbstractDao implements PermitDao {
 			} else {
 				if (applicantName != null) {
 					if (isSearch) {
-						query.addCriteria(Criteria.where(Permit.Constants.APPLICANT)
-								.regex(applicantName,"i"));
+						query.addCriteria(Criteria.where(
+								Permit.Constants.APPLICANT).regex(
+								applicantName, "i"));
 					} else {
 						query.addCriteria(Criteria.where(
 								Permit.Constants.APPLICANT).is(applicantName));
 					}
 				}
-				if (beforeDate != null) {
-					query.addCriteria(Criteria.where(
-							Permit.Constants.EXPIRATION_DATE).lt(new Date(beforeDate)));
+
+				if (beforeExpirationDate != null && afterExpirationDate != null) {
+					query.addCriteria(Criteria
+							.where(Permit.Constants.EXPIRATION_DATE)
+							.lt(new Date(beforeExpirationDate))
+							.gte(new Date(afterExpirationDate)));
+				} else {
+					if (beforeExpirationDate != null) {
+						query.addCriteria(Criteria.where(
+								Permit.Constants.EXPIRATION_DATE).lt(
+								new Date(beforeExpirationDate)));
+					}
+					if (afterExpirationDate != null) {
+						query.addCriteria(Criteria.where(
+								Permit.Constants.EXPIRATION_DATE).gte(
+								new Date(afterExpirationDate)));
+					}
 				}
-				if (afterDate != null) {
-					query.addCriteria(Criteria.where(
-							Permit.Constants.EXPIRATION_DATE).gte(new Date(afterDate)));
+
+				if (beforeCreationDate != null && afterCreationDate != null) {
+					query.addCriteria(Criteria
+							.where(AbstractEntity.Constants.CREATION_TIME)
+							.lt(beforeCreationDate)
+							.gte(afterCreationDate));
+				} else {
+					if (beforeCreationDate != null) {
+						query.addCriteria(Criteria.where(
+								AbstractEntity.Constants.CREATION_TIME).lt(
+								beforeCreationDate));
+					}
+					if (afterCreationDate != null) {
+						query.addCriteria(Criteria.where(
+								AbstractEntity.Constants.CREATION_TIME).gte(
+								afterCreationDate));
+					}
 				}
 				if (streetName != null) {
 					query.addCriteria(Criteria.where(Permit.Constants.ADDRESS)
-							.regex("/" + streetName + "/"));
+							.regex(streetName, "i"));
 				}
-				
+
 				if (status != null) {
 					query.addCriteria(Criteria.where(Permit.Constants.STATUS)
 							.is(status));

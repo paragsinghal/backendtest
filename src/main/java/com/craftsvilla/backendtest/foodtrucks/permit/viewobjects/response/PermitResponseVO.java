@@ -1,12 +1,16 @@
 package com.craftsvilla.backendtest.foodtrucks.permit.viewobjects.response;
 
-import org.springframework.data.geo.Point;
-
 import com.craftsvilla.backendtest.foodtrucks.enums.PermitStatus;
 import com.craftsvilla.backendtest.foodtrucks.viewobjects.response.AbstractResponse;
 
-public class PermitResponseVO extends AbstractResponse{
-	
+/**
+ * @author parag
+ *
+ *         Response view object for permit requests.
+ */
+public class PermitResponseVO extends AbstractResponse {
+
+	private String id;
 	private Long locationId;
 	private String applicant;
 	private String facilityType;
@@ -30,12 +34,19 @@ public class PermitResponseVO extends AbstractResponse{
 	private String received;
 	private int priorPermit;
 	private String expirationDate;
-	private Point location;
-	
+
 	public PermitResponseVO() {
 		super();
 	}
-	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public Long getLocationId() {
 		return locationId;
 	}
@@ -220,28 +231,20 @@ public class PermitResponseVO extends AbstractResponse{
 		this.expirationDate = expirationDate;
 	}
 
-	public Point getLocation() {
-		return location;
-	}
-
-	public void setLocation(Point location) {
-		this.location = location;
-	}
-
 	@Override
 	public String toString() {
-		return "PermitResponseVO [locationId=" + locationId + ", applicant="
-				+ applicant + ", facilityType=" + facilityType + ", cnn=" + cnn
-				+ ", locationDescription=" + locationDescription + ", address="
-				+ address + ", blockLot=" + blockLot + ", block=" + block
-				+ ", lot=" + lot + ", permit=" + permit + ", status=" + status
-				+ ", foodItems=" + foodItems + ", x=" + x + ", y=" + y
-				+ ", latitude=" + latitude + ", longitude=" + longitude
-				+ ", schedule=" + schedule + ", daysHours=" + daysHours
-				+ ", NOISent=" + NOISent + ", approved=" + approved
-				+ ", received=" + received + ", priorPermit=" + priorPermit
-				+ ", expirationDate=" + expirationDate + ", location="
-				+ location + "]";
+		return "PermitResponseVO [id=" + id + ", locationId=" + locationId
+				+ ", applicant=" + applicant + ", facilityType=" + facilityType
+				+ ", cnn=" + cnn + ", locationDescription="
+				+ locationDescription + ", address=" + address + ", blockLot="
+				+ blockLot + ", block=" + block + ", lot=" + lot + ", permit="
+				+ permit + ", status=" + status + ", foodItems=" + foodItems
+				+ ", x=" + x + ", y=" + y + ", latitude=" + latitude
+				+ ", longitude=" + longitude + ", schedule=" + schedule
+				+ ", daysHours=" + daysHours + ", NOISent=" + NOISent
+				+ ", approved=" + approved + ", received=" + received
+				+ ", priorPermit=" + priorPermit + ", expirationDate="
+				+ expirationDate + "]";
 	}
-	
+
 }

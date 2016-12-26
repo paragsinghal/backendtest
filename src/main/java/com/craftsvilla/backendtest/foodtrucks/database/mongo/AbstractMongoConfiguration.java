@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 import com.craftsvilla.backendtest.foodtrucks.utils.ConfigUtils;
 import com.mongodb.MongoClient;
 
+/**
+ * @author parag
+ *
+ *Service to get Mongo opertions. Spring MongoDb operations are set up here.
+ */
 @Service
 public class AbstractMongoConfiguration {
 

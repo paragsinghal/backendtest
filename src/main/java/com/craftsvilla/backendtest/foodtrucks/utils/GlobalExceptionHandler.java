@@ -13,6 +13,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+/**
+ * @author parag
+ *
+ *Global exception handler for spring container.
+ *Any Exception will basicallly go through this.
+ */
 @EnableWebMvc
 @ControllerAdvice
 public class GlobalExceptionHandler {
