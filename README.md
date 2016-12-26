@@ -10,7 +10,7 @@ Assumptions:
 
 APIS
 
-1) Get Permit API/ Get Permit Search API:
+1) Get Permit API/Get Permit Search API:   (Path: GET /permit?inputs as query params  && GET /permit/search?inputs as query params)
     
     inputs:  
      1) id : Mongo id of the record
@@ -38,10 +38,10 @@ Example use cases:
 Error Cases:
 Validation for dates, basic validations(Eg. empty checks, negative values) for applicant name, street name, size, limit.
 
-2)Add Permit API: (POST)
+2)Add Permit API: (POST : /permit/) content-type should be application json
 
-    inputs: 
-    
+    inputs: should be sent as body
+    AddPermitRequest{
     Long locationId;
     String applicant;
 	String facilityType;
@@ -62,6 +62,7 @@ Validation for dates, basic validations(Eg. empty checks, negative values) for a
 	String permit;
 	Long expirationDate;
     String callingUserId
+    }
     
     Eg Input:
     
@@ -92,11 +93,13 @@ Validation for dates, basic validations(Eg. empty checks, negative values) for a
      * While adding requested date is set and status is set as requested.
      * Response is returned with the id of the object saved.
 
-3) Update Status API  (PUT)
+3) Update Status API  (PUT:  /permit) content-type should be application json
 
-    inputs:
+    inputs: sent as body
+    updatePermitRequest{
     String permitId : mongoid of the saved permit entry
     PermitStatus status : Permit status (APPROVED, ONHOLD, SUSPEND)
+    }
     
     * update status to suspend/ONHOLD/APPROVED
     * if put onhold, NOISent date is updated.

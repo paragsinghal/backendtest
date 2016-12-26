@@ -82,7 +82,7 @@ public class PermitManager {
 			throw new IllegalArgumentException("No action permitted on inactive/expired requests :" + updatePermitRequest.getPermitId());
 		}
 		
-		switch (updatePermitRequest.getStatus()) {
+		switch(updatePermitRequest.getStatus()) {
 		case ONHOLD:
 			permit.setStatus(PermitStatus.ONHOLD);
 			permit.setNOISent(new Date(System.currentTimeMillis()));
