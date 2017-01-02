@@ -1,11 +1,19 @@
 package com.craftsvilla.backendtest.foodtrucks.utils;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -22,6 +30,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.JsonReader;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author parag
@@ -36,6 +47,8 @@ public class DataDumper {
 	PermitManager permitManager;
 	
 	Logger logger = LogFactory.getLogger(DataDumper.class);
+	
+	Client client = Client.create();
 	
 	@RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -139,5 +152,158 @@ public class DataDumper {
 		
 		//List<String> data = gson.fromJson(reader, REVIEW_TYPE); // contains the whole reviews list
 		///System.out.print(data.toString());
+	}
+	
+	@RequestMapping(value= "/es", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@Async
+	public void uploadPermitsES(@RequestParam("fileName") String fileName) throws IOException, ParseException, JSONException{
+		
+		BufferedReader br = null;
+		FileReader fr = null;
+
+		Long id =0l;
+		
+		try {
+
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
+
+			String sCurrentLine;
+			
+			List<String> currentLines = new ArrayList<String>();
+            int i=1;
+			while ((sCurrentLine = br.readLine()) != null) {
+				
+				if(id % 18334 == 0 && id !=0){
+					updateES(currentLines, id);
+					currentLines = new ArrayList<String>();
+					i++;
+				}
+				currentLines.add(sCurrentLine);
+				id++;
+			}
+			
+			System.out.println(id);
+			updateES(currentLines, id - (id%18334));
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			try {
+
+				if (br != null)
+					br.close();
+
+				if (fr != null)
+					fr.close();
+
+			} catch (IOException ex) {
+
+				ex.printStackTrace();
+
+			}
+
+		}
+
+	}
+	
+	@Async
+	public void updateES(List<String> currentLines, long id) throws JSONException{
+		String tt = "craftsvilla";
+		
+//		if(id> 300000){
+//			tt = "craftsvilla2";
+//		}
+//		if(id> 100000 && id < 200000){
+//			tt = "craftsvilla2";
+//		}
+//		if(id> 200000 && id < 300000){
+//			tt = "craftsvilla3";
+//		}
+//		if(id> 300000 && id < 400000){
+//			tt = "craftsvilla4";
+//		}
+//		if(id> 400000 && id < 500000){
+//			tt = "craftsvilla5";
+//		}
+//		if(id> 500000){
+//			tt = "craftsvilla6";
+//		}
+		
+		
+		for(long k =id-18334l ; k < id; k +=200) {
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		for(Long i = k; i< k + 200; i++){
+		try{
+		String [] strs = currentLines.get(i.intValue() % 18334).split(",");
+		
+		Integer weight = Integer.parseInt(strs[strs.length-1]);
+		
+		String [] inputs = strs[0].split(" ");
+		
+		Set<String> contextCharacters = new HashSet<String>();
+		List<String> finalInputs = new ArrayList<String>();
+		
+		if(inputs.length >1){
+			contextCharacters.add(new String(strs[0].charAt(0)+ "").toLowerCase());
+		finalInputs.add(strs[0]);
+		}
+		
+		for(String input :inputs){
+			if(input!=null && input !=" " && !input.isEmpty()){
+				contextCharacters.add(new String(input.charAt(0)+ "").toLowerCase());
+			finalInputs.add(input);
+			}
+		}
+		
+		for(int j=0; j< inputs.length-1; j++){
+			
+			if((inputs[j]!=null && !inputs[j].isEmpty()) && (inputs[j+1]!=null && !inputs[j+1].isEmpty())){
+			String a = inputs[j] + " " +inputs[j+1];
+			String b = inputs[j+1] + " " + inputs[j];
+			
+			contextCharacters.add(new String(a.charAt(0)+ "").toLowerCase());
+			contextCharacters.add(new String(b.charAt(0)+ "").toLowerCase());
+			finalInputs.add(a);
+			finalInputs.add(b);
+			}
+		}
+		
+		
+		JSONObject object = new JSONObject();
+		object.put("name", strs[0]);
+		JSONObject object2 = new JSONObject();
+		JSONObject object3 = new JSONObject();
+		//object3.put("seperator", new JSONArray(contextCharacters));
+		object2.put("input", new JSONArray(finalInputs));
+		object2.put("context", object3);
+		object2.put("weight", weight);
+		object2.put("output", strs[0]);
+		
+		object.put("nameSuggest", object2);
+		
+		String index = "{ \"index\" : {\"_id\" : \"" + i +"\" } }\n";
+		
+		
+		stringBuilder.append(index);
+		stringBuilder.append(object.toString() + "\n");
+		
+		}
+		catch(Exception e){
+			System.out.println(e.getMessage());
+			break;
+			}
+		}
+		String elasticSearchUrl = "http://35.154.43.96:8765/" +tt +"/searchterms/_bulk";
+		WebResource webResource = client.resource(elasticSearchUrl);
+		
+		ClientResponse clientResponse = webResource.type("application/json").post(
+				ClientResponse.class, stringBuilder.toString());
+		}
 	}
 }
